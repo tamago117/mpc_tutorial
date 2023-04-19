@@ -52,7 +52,7 @@ class cartpole_MPC:
             lam_x0 += [0]
 
             #stage cost
-            J = J + self.stage_cost(Xk, Uk, Xref)
+            J += self.stage_cost(Xk, Uk, Xref)
 
             # Discretized equation of state by forward Euler
             dXk = self.cartpole.dynamics(Xk, Uk)
@@ -75,7 +75,7 @@ class cartpole_MPC:
             Xk = Xk1
 
         # finite cost
-        J = J + self.terminal_cost(Xk, Xref)
+        J += self.terminal_cost(Xk, Xref)
 
         self.J = J
         self.w = vertcat(*w)
@@ -92,7 +92,7 @@ class cartpole_MPC:
         self.nlp = {'f': self.J, 'x': self.w, 'p': Xref, 'g': self.g}
         # Ipopt ソルバー，最小バリアパラメータを0.1，最大反復回数を5, ウォームスタートをONに
         self.solver = nlpsol('solver', 'ipopt', self.nlp, {'calc_lam_p':True, 'calc_lam_x':True, 'print_time':False, 'ipopt':{'max_iter':5, 'mu_min':0.1, 'warm_start_init_point':'yes', 'print_level':0, 'print_timing_statistics':'no'}})
-        # self.solver = nlpsol('solver', 'scpgen', self.nlp, {'calc_lam_p':True, 'calc_lam_x':True, 'qpsol':'qpoases', 'print_time':False, 'print_header':False, 'max_iter':5, 'hessian_approximation':'gauss-newton', 'qpsol_options':{'print_out':False, 'printLevel':'none'}}) # print をオフにしたいがやり方がわからない
+
 
     def init(self, x0=None, xref=None):
         if x0 is not None:
@@ -108,6 +108,7 @@ class cartpole_MPC:
         self.lam_x = sol['lam_x'].full().flatten()
         self.lam_g = sol['lam_g'].full().flatten()
 
+
     def stage_cost(self, x, u, x_ref):
         cost = 0
         for i in range(self.nx):
@@ -116,11 +117,13 @@ class cartpole_MPC:
             cost += 0.5 * self.R[i] * u[i]**2
         return cost
 
+
     def terminal_cost(self, x, x_ref):
         cost = 0
         for i in range(self.nx):
             cost += 0.5 * self.Q[i] * (x[i] - x_ref[i])**2
         return cost
+
 
     """
     x0 = np.array([x_current, angle_current, v_current, angleV_current])
