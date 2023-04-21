@@ -1,6 +1,12 @@
 # mpc_tutorial
 control cartpole by MPC
 
+
+
+https://user-images.githubusercontent.com/38370926/233639443-86b12541-4487-435a-8122-a70209428cc8.mp4
+
+
+
 ## environment
 - ubuntu 20.04
 
