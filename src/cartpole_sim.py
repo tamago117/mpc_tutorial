@@ -12,7 +12,7 @@ sampling_time = 0.02 # 100hz
 T = 50 # horizon
 
 max_input = 35
-x_max = 1.5
+x_max = 1.0
 
 def main():
     x = np.array([0.0, math.pi, 0.0, 0.0]) # initial state
